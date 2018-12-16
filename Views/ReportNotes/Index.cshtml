@@ -1,0 +1,77 @@
+﻿@model IEnumerable<RecordNoteCore.Data.Entities.SummaryNote>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Report Notes</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<table class="table">
+    <tr>
+        <th>Code</th>
+        <th>Student</th>
+        @foreach (var item in ViewBag.Tests)
+        {
+            <th>@item.Text</th>
+        }
+        <th>Final</th>
+        <th>Result</th>
+    </tr>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Student.Id</td>
+                <td>@item.Student.Name</td>
+
+                @foreach (var itemTest in ViewBag.Tests)
+                {
+                    bool entrada = false;
+                    @foreach (var itemNote in Model)
+                    {
+
+                        @foreach (var note in itemNote.TestNoteViews)
+                        {
+                            @if (itemTest.Value == note.Id.ToString() && itemNote.Student.Id == item.Student.Id)
+                            {
+                                <td>@note.Note</td>
+                                entrada = true;
+                            }
+
+                        }
+
+                    }
+                    @if (!entrada)
+                    {
+                        <td>0</td>
+                    }
+                }
+                <td>
+                    @item.Final
+                </td>
+                <td>
+                    @if (item.Final >= Convert.ToDecimal(2.95))
+                    {
+                        <label>Win</label>
+
+                    }
+                    else
+                    {
+                        <label>Lost</label>
+                    }
+                </td>
+                <td>
+                    <a asp-action="DetailsSumary" asp-route-id="@item.Student.Id" class="btn btn-info">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-success"><i class="fa fa-arrow-left"></i> Back to List</a>
+</div>
+
+
